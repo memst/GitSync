@@ -19,7 +19,7 @@ jobs:
         id: dummy_files
         run: |
           mkdir -p /home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/;
-          cd !$;
+          cd /home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/;
           for apk in app-arm64-v8a-release-signed.apk app-armeabi-v7a-release-signed.apk app-x86_64-release-signed.apk; do
             echo "CONTENTS OF $apk" > apk;
           done
