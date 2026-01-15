@@ -29,24 +29,19 @@ jobs:
         id: sign_app
         run: echo "signedFiles=/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-arm64-v8a-release-signed.apk:/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-armeabi-v7a-release-signed.apk:/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-x86_64-release-signed.apk" >> "$GITHUB_OUTPUT"
 
-      - name: Manual Split
-        id: signed_files2
-        run: IFS=':' read -ra arr <<< "${{ steps.sign_app.outputs.signedFiles }}"; for i in "${!arr[@]}"; do echo "_$i=${arr[$i]}" >> "$GITHUB_OUTPUT"; done
-
       - name: Manual Split one variable
-        id: signed_files3
+        id: signed_files
         run: |
-          echo "signedFiles<<SIGNED_FILES_EOF_DELIMETER" >> "$GITHUB_OUTPUT";
-          echo "${{ steps.sign_app.outputs.signedFiles }}" | sed 's/:/\n/g' >> "$GITHUB_OUTPUT";
-          echo "SIGNED_FILES_EOF_DELIMETER" >> "$GITHUB_OUTPUT";
-
-      - name: Test var with echo
-        run: echo '${{ steps.signed_files3.outputs.signedFiles }}'
+          {
+            echo "signedFiles<<SIGNED_FILES_EOF_DELIMETER"
+            echo "${{ steps.sign_app.outputs.signedFiles }}" | sed 's/:/\n/g'
+            echo "SIGNED_FILES_EOF_DELIMETER"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: release-artifacts
           path: |
-            ${{ steps.signed_files3.outputs.signedFiles }}
+            ${{ steps.signed_files.outputs.signedFiles }}
             !*-release.apk
