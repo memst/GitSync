@@ -27,4 +27,4 @@ jobs:
 
       - name: Manual Split
         id: signed_files2
-        run: IFS=':' read -ra arr <<< "${{ steps.sign_app.outputs.signedFiles }}"; for i in "${!arr[@]}"; do echo "_$i=${arr[$i]}" >> GITHUB_OUTPUT; done
+        run: IFS=':' read -ra arr <<< "${{ steps.sign_app.outputs.signedFiles }}"; for i in "${!arr[@]}"; do echo "_$i=${arr[$i]}" >> "$GITHUB_OUTPUT"; done
