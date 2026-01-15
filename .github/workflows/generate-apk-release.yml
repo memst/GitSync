@@ -24,3 +24,6 @@ jobs:
         with:
           msg: ${{ steps.sign_app.outputs.signedFiles }}
           separator: ":"
+          
+      - name: Dump docker logs on failure
+        uses: jwalton/gh-docker-logs@v2
