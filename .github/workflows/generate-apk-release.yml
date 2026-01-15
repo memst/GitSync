@@ -18,11 +18,11 @@ jobs:
       - name: Dummy files
         id: dummy_files
         run: |
-        mkdir -p /home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/;
-        cd !$;
-        for apk in app-arm64-v8a-release-signed.apk app-armeabi-v7a-release-signed.apk app-x86_64-release-signed.apk; do
-          echo "CONTENTS OF $apk" > apk;
-        done
+          mkdir -p /home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/;
+          cd !$;
+          for apk in app-arm64-v8a-release-signed.apk app-armeabi-v7a-release-signed.apk app-x86_64-release-signed.apk; do
+            echo "CONTENTS OF $apk" > apk;
+          done
 
       - name: Sign App
         id: sign_app
@@ -35,9 +35,9 @@ jobs:
       - name: Manual Split one variable
         id: signed_files3
         run: |
-        echo "signedFiles<<SIGNED_FILES_EOF_DELIMETER" > "$GITHUB_OUTPUT";
-        echo "${{ steps.sign_app.outputs.signedFiles }}" | sed 's/:/\n/g' >> "$GITHUB_OUTPUT";
-        echo "SIGNED_FILES_EOF_DELIMETER" >> "$GITHUB_OUTPUT";
+          echo "signedFiles<<SIGNED_FILES_EOF_DELIMETER" > "$GITHUB_OUTPUT";
+          echo "${{ steps.sign_app.outputs.signedFiles }}" | sed 's/:/\n/g' >> "$GITHUB_OUTPUT";
+          echo "SIGNED_FILES_EOF_DELIMETER" >> "$GITHUB_OUTPUT";
 
       - name: Upload Release Build to Artifacts
         uses: actions/upload-artifact@v4
