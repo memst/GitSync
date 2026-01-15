@@ -15,16 +15,36 @@ jobs:
       contents: write
 
     steps:
+      - name: Dummy files
+        id: dummy_files
+        run: |
+        mkdir -p /home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/;
+        cd !$;
+        for apk in app-arm64-v8a-release-signed.apk app-armeabi-v7a-release-signed.apk app-x86_64-release-signed.apk; do
+          echo "CONTENTS OF $apk" > apk;
+        done
+
       - name: Sign App
         id: sign_app
         run: echo "signedFiles=/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-arm64-v8a-release-signed.apk:/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-armeabi-v7a-release-signed.apk:/home/runner/work/GitSync/GitSync/build/app/outputs/flutter-apk/app-x86_64-release-signed.apk" >> "$GITHUB_OUTPUT"
 
-      - uses: jungwinter/split@v2
-        id: signed_files
-        with:
-          msg: ${{ steps.sign_app.outputs.signedFiles }}
-          separator: ":"
-
       - name: Manual Split
         id: signed_files2
         run: IFS=':' read -ra arr <<< "${{ steps.sign_app.outputs.signedFiles }}"; for i in "${!arr[@]}"; do echo "_$i=${arr[$i]}" >> "$GITHUB_OUTPUT"; done
+
+      - name: Manual Split one variable
+        id: signed_files3
+        run: |
+        echo "signedFiles<<SIGNED_FILES_EOF_DELIMETER" > "$GITHUB_OUTPUT";
+        echo "${{ steps.sign_app.outputs.signedFiles }}" | sed 's/:/\n/g' >> "$GITHUB_OUTPUT";
+        echo "SIGNED_FILES_EOF_DELIMETER" >> "$GITHUB_OUTPUT";
+
+      - name: Upload Release Build to Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            ${{ steps.signed_files.outputs._0 }}
+            ${{ steps.signed_files.outputs._1 }}
+            ${{ steps.signed_files.outputs._2 }}
+            !*-release.apk
