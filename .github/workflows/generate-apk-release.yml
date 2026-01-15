@@ -45,7 +45,5 @@ jobs:
         with:
           name: release-artifacts
           path: |
-            ${{ steps.signed_files2.outputs._0 }}
-            ${{ steps.signed_files2.outputs._1 }}
-            ${{ steps.signed_files2.outputs._2 }}
+            ${{ steps.signed_files3.signedFiles }}
             !*-release.apk
